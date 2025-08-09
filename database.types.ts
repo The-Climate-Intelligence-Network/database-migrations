@@ -17,10 +17,10 @@ export type Database = {
     Functions: {
       graphql: {
         Args: {
-          query?: string
           variables?: Json
-          extensions?: Json
+          query?: string
           operationName?: string
+          extensions?: Json
         }
         Returns: Json
       }
@@ -120,6 +120,267 @@ export type Database = {
           },
         ]
       }
+      agents: {
+        Row: {
+          address: string | null
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          energy: number
+          full_name: string | null
+          id: string
+          phone: string | null
+          points: number
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          energy?: number
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          points?: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          energy?: number
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          points?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      energy_transactions: {
+        Row: {
+          agent_id: string
+          balance_after: number
+          created_at: string
+          description: string
+          energy_amount: number
+          id: number
+          metadata: Json | null
+          mission_id: string | null
+          reference_id: string | null
+          reference_type: string | null
+          submission_id: string | null
+          transaction_type: string
+        }
+        Insert: {
+          agent_id: string
+          balance_after: number
+          created_at?: string
+          description: string
+          energy_amount: number
+          id?: number
+          metadata?: Json | null
+          mission_id?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          submission_id?: string | null
+          transaction_type: string
+        }
+        Update: {
+          agent_id?: string
+          balance_after?: number
+          created_at?: string
+          description?: string
+          energy_amount?: number
+          id?: number
+          metadata?: Json | null
+          mission_id?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          submission_id?: string | null
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "energy_transactions_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "energy_transactions_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "energy_transactions_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "mission_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mission_bookmarks: {
+        Row: {
+          agent_id: string
+          created_at: string
+          id: number
+          mission_id: string
+        }
+        Insert: {
+          agent_id: string
+          created_at?: string
+          id?: number
+          mission_id: string
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string
+          id?: number
+          mission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mission_bookmarks_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mission_bookmarks_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mission_submissions: {
+        Row: {
+          additional_data: Json | null
+          agent_id: string
+          completed_at: string | null
+          created_at: string
+          guidance_evidence: Json
+          id: string
+          mission_id: string
+          review_notes: string | null
+          review_score: number | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          additional_data?: Json | null
+          agent_id: string
+          completed_at?: string | null
+          created_at?: string
+          guidance_evidence?: Json
+          id?: string
+          mission_id: string
+          review_notes?: string | null
+          review_score?: number | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          additional_data?: Json | null
+          agent_id?: string
+          completed_at?: string | null
+          created_at?: string
+          guidance_evidence?: Json
+          id?: string
+          mission_id?: string
+          review_notes?: string | null
+          review_score?: number | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mission_submissions_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mission_submissions_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      missions: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string
+          energy_awarded: number
+          guidance_steps: Json
+          id: string
+          instructions: Json
+          is_featured: boolean
+          organization_id: string
+          points_awarded: number
+          status: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description: string
+          energy_awarded: number
+          guidance_steps?: Json
+          id?: string
+          instructions?: Json
+          is_featured?: boolean
+          organization_id: string
+          points_awarded: number
+          status?: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string
+          energy_awarded?: number
+          guidance_steps?: Json
+          id?: string
+          instructions?: Json
+          is_featured?: boolean
+          organization_id?: string
+          points_awarded?: number
+          status?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "missions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organization_permissions: {
         Row: {
           created_at: string
@@ -200,38 +461,72 @@ export type Database = {
         }
         Relationships: []
       }
-      players: {
+      point_transactions: {
         Row: {
-          address: string | null
-          avatar_url: string | null
+          agent_id: string
+          balance_after: number
           created_at: string
-          email: string | null
-          full_name: string | null
-          id: string
-          phone: string | null
-          updated_at: string
+          description: string
+          id: number
+          metadata: Json | null
+          mission_id: string | null
+          points_amount: number
+          reference_id: string | null
+          reference_type: string | null
+          submission_id: string | null
+          transaction_type: string
         }
         Insert: {
-          address?: string | null
-          avatar_url?: string | null
+          agent_id: string
+          balance_after: number
           created_at?: string
-          email?: string | null
-          full_name?: string | null
-          id: string
-          phone?: string | null
-          updated_at?: string
+          description: string
+          id?: number
+          metadata?: Json | null
+          mission_id?: string | null
+          points_amount: number
+          reference_id?: string | null
+          reference_type?: string | null
+          submission_id?: string | null
+          transaction_type: string
         }
         Update: {
-          address?: string | null
-          avatar_url?: string | null
+          agent_id?: string
+          balance_after?: number
           created_at?: string
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          phone?: string | null
-          updated_at?: string
+          description?: string
+          id?: number
+          metadata?: Json | null
+          mission_id?: string | null
+          points_amount?: number
+          reference_id?: string | null
+          reference_type?: string | null
+          submission_id?: string | null
+          transaction_type?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "point_transactions_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "point_transactions_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "point_transactions_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "mission_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       role_permissions: {
         Row: {
@@ -302,6 +597,19 @@ export type Database = {
         }
         Returns: boolean
       }
+      bookmark_or_start_mission: {
+        Args: { p_action: string; p_agent_id: string; p_mission_id: string }
+        Returns: string
+      }
+      complete_mission_submission: {
+        Args: {
+          p_submission_id: string
+          p_reviewed_by?: string
+          p_review_notes?: string
+          p_review_score?: number
+        }
+        Returns: undefined
+      }
       custom_access_token_hook: {
         Args: { event: Json }
         Returns: Json
@@ -313,13 +621,13 @@ export type Database = {
       get_pending_organization_approvals: {
         Args: Record<PropertyKey, never>
         Returns: {
-          organization_id: string
-          organization_name: string
-          contact_email: string
-          admin_name: string
-          admin_email: string
           requested_privileges: Json
           created_at: string
+          contact_email: string
+          organization_name: string
+          organization_id: string
+          admin_name: string
+          admin_email: string
         }[]
       }
       has_organization_role: {
@@ -352,18 +660,19 @@ export type Database = {
     Enums: {
       app_permission:
         | "manage_organization"
-        | "manage_players"
+        | "manage_agents"
         | "create_missions"
         | "manage_missions"
         | "create_rewards"
         | "manage_rewards"
         | "approve_organizations"
-        | "manage_cin_admins"
-      app_role: "player" | "cin_admin" | "org_admin"
+        | "manage_admins"
+      app_role: "agent" | "admin"
       organization_permission_type:
         | "mobilizing_partners"
         | "mission_partners"
         | "reward_partners"
+        | "cin_administrators"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -484,19 +793,20 @@ export const Constants = {
     Enums: {
       app_permission: [
         "manage_organization",
-        "manage_players",
+        "manage_agents",
         "create_missions",
         "manage_missions",
         "create_rewards",
         "manage_rewards",
         "approve_organizations",
-        "manage_cin_admins",
+        "manage_admins",
       ],
-      app_role: ["player", "cin_admin", "org_admin"],
+      app_role: ["agent", "admin"],
       organization_permission_type: [
         "mobilizing_partners",
         "mission_partners",
         "reward_partners",
+        "cin_administrators",
       ],
     },
   },

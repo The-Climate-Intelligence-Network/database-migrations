@@ -20,20 +20,20 @@ begin
     return new;
   end if;
   
-  -- Get user type from metadata (defaults to "player" for public signups)
-  user_type := coalesce(new.raw_user_meta_data->>'user_type', 'player');
+  -- Get user type from metadata (defaults to "agent" for public signups)
+  user_type := coalesce(new.raw_user_meta_data->>'user_type', 'agent');
   
-  -- Note: If no user_type is provided, we default to "player" for public signups
+  -- Note: If no user_type is provided, we default to "agent" for public signups
   
   -- Security: Validate user_type against allowed values
-  if user_type not in ('player', 'admin') then
-    raise exception 'Invalid user_type: %. Only "player" and "admin" are allowed.', user_type;
+  if user_type not in ('agent', 'admin') then
+    raise exception 'Invalid user_type: %. Only "agent" and "admin" are allowed.', user_type;
   end if;
   
-  -- Security: Prevent unauthorized cin_admin creation via public signup
-  -- CIN admins can only be created through the Supabase dashboard
-  if user_type = 'cin_admin' then
-    raise exception 'CIN admin accounts cannot be created through public signup. Contact system administrator.';
+  -- Security: Prevent unauthorized CIN administrator creation via public signup
+  -- CIN administrators can only be created through the Supabase dashboard or by existing CIN admins
+  if new.raw_user_meta_data ? 'has_cin_admin_privileges' and (new.raw_user_meta_data->>'has_cin_admin_privileges')::boolean = true then
+    raise exception 'CIN administrator accounts cannot be created through public signup. Contact system administrator.';
   end if;
   
   if user_type = 'admin' then
@@ -129,13 +129,13 @@ begin
       end;
     end loop;
     
-    -- Assign org_admin role to the user for this organization
+    -- Assign admin role to the user for this organization
     insert into public.user_roles (user_id, role, organization_id) 
-    values (new.id, 'org_admin'::public.app_role, org_id);
+    values (new.id, 'admin'::public.app_role, org_id);
     
   else
-    -- Default case: create player (for any user_type that's not 'admin' or when user_type is null)
-    insert into public.players (
+    -- Default case: create agent (for any user_type that's not 'admin' or when user_type is null)
+    insert into public.agents (
       id, 
       full_name, 
       avatar_url, 
@@ -152,9 +152,9 @@ begin
       new.raw_user_meta_data->>'address'
     );
     
-    -- Assign global player role (no organization_id)
+    -- Assign global agent role (no organization_id)
     insert into public.user_roles (user_id, role, organization_id)
-    values (new.id, 'player'::public.app_role, null);
+    values (new.id, 'agent'::public.app_role, null);
     
   end if;
   
